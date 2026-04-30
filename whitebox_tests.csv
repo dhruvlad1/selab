@@ -1,0 +1,16 @@
+ID,Test_Type,Coverage_Target,Scenario,Expected_Result,StudentID,Student_CGPA,Student_AppCount,InternshipID,Internship_Open,Internship_MinCGPA,Resume
+1,WhiteBox,Path 1 + Statement,Valid Path: All Criteria Met,Pass: Success,101,8.5,0,501,true,6.0,res.pdf
+2,WhiteBox,Path 2 + Student ID,Invalid Student ID (0),Fail: Invalid ID,0,8.5,0,501,true,6.0,res.pdf
+3,WhiteBox,Path 3 + Internship ID,Invalid Internship ID (-1),Fail: Invalid ID,102,8.5,0,-1,true,6.0,res.pdf
+4,WhiteBox,Path 4 + CGPA Branch,Branch: CGPA 5.5 < Min 6.0,Fail: Low CGPA,103,5.5,0,501,true,6.0,res.pdf
+5,WhiteBox,Path 5 + Limit Branch,Branch: App Count = 5,Fail: Limit Reached (Max 5),104,8.0,5,501,true,6.0,res.pdf
+6,WhiteBox,Path 6 + Open Branch,Branch: Internship Closed,Fail: Internship Closed,105,8.0,0,502,false,6.0,res.pdf
+7,WhiteBox,Path 7 + Resume Branch,Branch: Empty Resume String,Fail: Missing Resume,106,8.0,0,501,true,6.0,
+8,WhiteBox,Path Combo,Path: Valid Min CGPA (6.0),Pass: Success,107,6.0,0,501,true,6.0,res.pdf
+9,WhiteBox,Path Combo,Path: Negative ID check,Fail: Invalid ID,-5,8.0,0,501,true,6.0,res.pdf
+10,WhiteBox,Path Combo,Path: Max CGPA (10.0),Pass: Success,108,10.0,0,501,true,6.0,res.pdf
+11,WhiteBox,Path Combo,Path: App Count at 4,Pass: Success,109,7.5,4,501,true,6.0,res.pdf
+12,WhiteBox,Path Combo,Path: Closed Intern with High CGPA,Fail: Internship Closed,110,9.5,0,503,false,6.0,res.pdf
+13,WhiteBox,Path Priority,Path: Invalid Student ID + Closed Intern,Fail: Invalid ID,0,8.5,0,503,false,6.0,res.pdf
+14,WhiteBox,Path Combo,Path: Valid Student + Missing Resume,Fail: Missing Resume,111,8.0,0,501,true,6.0,
+15,WhiteBox,Statement Recheck,Path: Zero Application Count,Pass: Success,112,7.0,0,501,true,6.0,res.pdf

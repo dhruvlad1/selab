@@ -1,0 +1,16 @@
+ID,Test_Type,Test_Technique,Scenario,Expected_Result,StudentID,Student_CGPA,Student_AppCount,InternshipID,Internship_Open,Internship_MinCGPA,Resume
+16,BlackBox,BVA,BVA: CGPA 5.99 (Just Below),Fail: Low CGPA,201,5.99,0,501,true,6.0,res.pdf
+17,BlackBox,BVA,BVA: CGPA 6.00 (Exact Boundary),Pass: Success,202,6.00,0,501,true,6.0,res.pdf
+18,BlackBox,BVA,BVA: CGPA 6.01 (Just Above),Pass: Success,203,6.01,0,501,true,6.0,res.pdf
+19,BlackBox,BVA,BVA: App Count 4 (Below Limit),Pass: Success,204,7.5,4,501,true,6.0,res.pdf
+20,BlackBox,BVA,BVA: App Count 5 (At Limit),Fail: Limit Reached (Max 5),205,7.5,5,501,true,6.0,res.pdf
+21,BlackBox,BVA,BVA: App Count 6 (Over Limit),Fail: Limit Reached (Max 5),206,7.5,6,501,true,6.0,res.pdf
+22,BlackBox,ECP,ECP: Valid CGPA (8.5),Pass: Success,207,8.5,0,501,true,6.0,res.pdf
+23,BlackBox,ECP,ECP: Invalid CGPA (2.0),Fail: Low CGPA,208,2.0,0,501,true,6.0,res.pdf
+24,BlackBox,ECP,ECP: Out of Range CGPA (-1.0),Fail: Low CGPA,209,-1.0,0,501,true,6.0,res.pdf
+25,BlackBox,ECP,ECP: Valid Resume String,Pass: Success,210,8.0,0,501,true,6.0,my_cv.pdf
+26,BlackBox,ECP,ECP: Empty Resume String,Fail: Missing Resume,211,8.0,0,501,true,6.0,
+27,BlackBox,ECP,ECP: Status Open (Valid),Pass: Success,212,8.0,0,501,true,6.0,res.pdf
+28,BlackBox,ECP,ECP: Status Closed (Invalid),Fail: Internship Closed,213,8.0,0,503,false,6.0,res.pdf
+29,BlackBox,BVA,BVA: Student ID 1 (Min Valid),Pass: Success,1,8.0,0,501,true,6.0,res.pdf
+30,BlackBox,BVA,BVA: Student ID 0 (Min Invalid),Fail: Invalid ID,0,8.0,0,501,true,6.0,res.pdf
