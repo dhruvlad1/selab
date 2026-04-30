@@ -162,7 +162,15 @@ void executeTest(int id,
         const std::string scenarioCell = (row < scenarioLines.size()) ? scenarioLines[row] : "";
         const std::string expectedCell = (row < expectedLines.size()) ? expectedLines[row] : "";
         const std::string actualCell = (row < actualLines.size()) ? actualLines[row] : "";
-        const std::string statusCell = (row == 0) ? (passed ? "Pass" : "Fail") : "";
+        
+        std::string statusCell = "";
+        if (row == 0) {
+            if (passed) {
+                statusCell = "\033[32m[PASS]\033[0m";
+            } else {
+                statusCell = "\033[31m[FAIL]\033[0m";
+            }
+        }
 
         std::cout << std::left << std::setw(gIdW) << idCell << " | "
                   << std::setw(gTypeW) << typeCell << " | "
@@ -170,21 +178,22 @@ void executeTest(int id,
                   << std::setw(gScenarioW) << scenarioCell << " | "
                   << std::setw(gExpectedW) << expectedCell << " | "
                   << std::setw(gActualW) << actualCell << " | "
-                  << std::setw(gStatusW) << statusCell << '\n';
+                  << std::setw(12) << statusCell << '\n';
     }
 
     std::cout << std::string(gTableWidth, '-') << '\n';
 }
 
 void printTestTableHeader() {
-    std::cout << std::left << std::setw(gIdW) << "ID" << " | "
+    std::cout << "\033[1m\033[44m" << std::string(gTableWidth, ' ') << "\033[0m\n";
+    std::cout << "\033[1m\033[44m" << std::left << std::setw(gIdW) << "ID" << " | "
               << std::setw(gTypeW) << "Type" << " | "
               << std::setw(gTargetW) << "Coverage Target" << " | "
               << std::setw(gScenarioW) << "Scenario" << " | "
               << std::setw(gExpectedW) << "Expected" << " | "
               << std::setw(gActualW) << "Actual" << " | "
-              << std::setw(gStatusW) << "Status" << '\n';
-    std::cout << std::string(gTableWidth, '-') << '\n';
+              << std::setw(12) << "Status" << "\033[0m\n";
+    std::cout << "\033[1m" << std::string(gTableWidth, '=') << "\033[0m\n";
 }
 
 void runAutomatedTests(InternshipController &ctrl) {
@@ -196,12 +205,21 @@ void runAutomatedTests(InternshipController &ctrl) {
     gTotalTests = 0;
     gPassedTests = 0;
 
-    std::cout << "\n==================== Automated Test Report ====================\n";
-    std::cout << "\n[Section A] White Box Testing (15 Cases)\n";
+    std::cout << "\033[1m\n" << std::string(gTableWidth, '=') << "\033[0m\n";
+    std::cout << "\033[1m\033[46m" << std::string(gTableWidth, ' ') << "\033[0m\n";
+    std::cout << "\033[1m\033[46m  AUTOMATED TEST REPORT - INTERNSHIP MANAGEMENT SYSTEM  \033[0m\n";
+    std::cout << "\033[1m\033[46m" << std::string(gTableWidth, ' ') << "\033[0m\n";
+    std::cout << "\033[1m" << std::string(gTableWidth, '=') << "\033[0m\n\n";
+    
+    std::cout << "\033[1m\033[45m >> SECTION A: WHITE BOX TESTING (15 Test Cases) \033[0m\n\n";
+    std::cout << "  [*] Coverage Path Map (applyForInternship):\n";
+    std::cout << "    - P1: Invalid Student ID\n";
+    std::cout << "    - P2: Invalid Internship ID\n";
+    std::cout << "    - P3: CGPA Eligibility Check\n";
+    std::cout << "    - P4: Application Limit Check (Max 5)\n";
+    std::cout << "    - P5: Internship Status Check\n";
+    std::cout << "    - P6: Resume Validation\n\n";
     printTestTableHeader();
-    std::cout << "Path Map (applyForInternship):\n";
-    std::cout << "P1=Invalid Student ID, P2=Invalid Internship ID, P3=CGPA Rejection,\n";
-    std::cout << "P4=Limit Rejection, P5=Closed Internship Rejection, P6=Success Path.\n";
 
     auto makeStudent = [](int studentID, float cgpa, int currentApplicationCount) {
         return Student{studentID, cgpa, currentApplicationCount, {}};
@@ -275,7 +293,10 @@ void runAutomatedTests(InternshipController &ctrl) {
     runWhiteBoxApplyCase(15, "Statement Recheck", "Path: Zero Application Count", "Pass: Success",
                          makeStudent(112, 7.0f, 0), makeInternship(501, true, 6.0f), "res.pdf");
 
-    std::cout << "\n[Section B] Black Box Testing (15 Cases)\n";
+    std::cout << "\n\033[1m\033[45m >> SECTION B: BLACK BOX TESTING (15 Test Cases) \033[0m\n\n";
+    std::cout << "  [*] Testing Techniques:\n";
+    std::cout << "    - BVA: Boundary Value Analysis\n";
+    std::cout << "    - ECP: Equivalence Class Partitioning\n\n";
     printTestTableHeader();
     auto runBlackBoxApplyCase = [&](int id,
                                     const std::string &scenario,
@@ -326,10 +347,27 @@ void runAutomatedTests(InternshipController &ctrl) {
     runBlackBoxApplyCase(30, "BVA: Student ID 0 (Min Invalid)", "Fail: Invalid ID",
                          makeStudent(0, 8.0f, 0), makeInternship(501, true, 6.0f), "res.pdf");
 
-    std::cout << std::string(120, '-') << '\n';
-    std::cout << "Total Executed: " << gTotalTests << '\n';
-    std::cout << "Passed: " << gPassedTests << '\n';
-    std::cout << "Failed: " << (gTotalTests - gPassedTests) << "\n\n";
+    std::cout << "\033[1m" << std::string(120, '=') << "\033[0m\n\n";
+    
+    int failed = gTotalTests - gPassedTests;
+    float passPercentage = (gTotalTests > 0) ? (gPassedTests * 100.0f / gTotalTests) : 0.0f;
+    
+    std::cout << "\033[1m\033[46m" << std::string(gTableWidth, ' ') << "\033[0m\n";
+    std::cout << "\033[1m\033[46m  TEST EXECUTION SUMMARY  \033[0m\n";
+    std::cout << "\033[1m\033[46m" << std::string(gTableWidth, ' ') << "\033[0m\n\n";
+    
+    std::cout << "  Total Test Cases Executed: " << "\033[1m" << gTotalTests << "\033[0m\n";
+    std::cout << "  [+] Passed: " << "\033[32m\033[1m" << gPassedTests << "\033[0m\n";
+    std::cout << "  [-] Failed: " << "\033[" << (failed > 0 ? "31" : "32") << "m\033[1m" << failed << "\033[0m\n";
+    std::cout << "  Success Rate: " << "\033[33m\033[1m" << std::fixed << std::setprecision(1) << passPercentage << "%\033[0m\n\n";
+    
+    if (failed == 0) {
+        std::cout << "\033[32m\033[1m  [SUCCESS] ALL TESTS PASSED SUCCESSFULLY! \033[0m\n\n";
+    } else {
+        std::cout << "\033[31m\033[1m  [ERROR] SOME TESTS FAILED. REVIEW DETAILS ABOVE. \033[0m\n\n";
+    }
+    
+    std::cout << "\033[1m" << std::string(gTableWidth, '=') << "\033[0m\n\n";
 }
 
 void clearScreen() {
