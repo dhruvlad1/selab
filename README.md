@@ -21,11 +21,12 @@ A demonstration of professional software engineering practices through a **Stude
 
 ## Overview
 
-The Student Internship Portal is a CLI-based system that streamlines the internship recruitment process across three stakeholder portals:
+The Student Internship Portal is a CLI-based system that streamlines the internship recruitment process across four primary stakeholders:
 
-- **Student Portal** - Apply for internships with automatic eligibility validation
-- **HR/Company Portal** - Review and shortlist applications
-- **Faculty Mentor Portal** - Verify internship completion
+- **Student** - Search, apply for internships with automatic eligibility validation
+- **Company HR** - Post internship listings, review and shortlist applications, conduct interviews
+- **Faculty Mentor** - Monitor student progress, verify internship completion, approve NOC
+- **Placement Officer** - Track placement analytics, oversee placement activities
 
 ### Key Features
 
@@ -45,38 +46,54 @@ The system strictly follows the **Entity-Boundary-Control architectural pattern*
 
 ### Pattern Breakdown
 
-| Component          | Role                         | Location       | Responsibility                                                |
-| ------------------ | ---------------------------- | -------------- | ------------------------------------------------------------- |
-| **Entity Layer**   | Core business objects        | `models.h`     | Data representation (Student, Internship, Application)        |
-| **Boundary Layer** | User interaction interface   | `main.cpp`     | CLI menus, input/output, user workflows                       |
-| **Control Layer**  | Business logic orchestration | `controller.h` | Application validation, eligibility checks, state transitions |
+| Component          | Role                         | Objects                               | Responsibility                                               |
+| ------------------ | ---------------------------- | ------------------------------------- | ------------------------------------------------------------ |
+| **Entity Layer**   | Core business objects        | Student, Internship, Application      | Persistent data and core state of the system                 |
+| **Boundary Layer** | User interaction interface   | ApplicationForm, NotificationToast    | Interfaces through which users interact with the system      |
+| **Control Layer**  | Business logic orchestration | ApplicationManager, ValidationService | Flow coordination, eligibility checks, application lifecycle |
+
+### Canonical EBC Objects
+
+The system uses exactly seven canonical objects in the Entity-Boundary-Control pattern:
+
+**Entities (Data & State):**
+
+- `Student` - Represents a student with ID, CGPA, application count, and skills
+- `Internship` - Represents an internship position with domain, status, and eligibility criteria
+- `Application` - Represents a student's application with status, resume, and verification state
+
+**Boundary Objects (User Interface):**
+
+- `ApplicationForm` - Interface for students to submit internship applications
+- `NotificationToast` - Interface for system notifications and feedback to users
+
+**Control Objects (Business Logic):**
+
+- `ApplicationManager` - Orchestrates application workflow and lifecycle management
+- `ValidationService` - Enforces business rules and eligibility validation
 
 ### Architecture Diagram
 
 ```
-+-----------BOUNDARY LAYER (main.cpp)-----------+
-|  - Student Portal Menu                        |
-|  - HR Portal Menu                             |
-|  - Faculty Portal Menu                        |
-+----+-------+-------+-----+----+-------+-------+
++-----------BOUNDARY LAYER-------------------+
+|  - ApplicationForm                         |
+|  - NotificationToast                       |
++----+-------+-------+-----+----+-------+---+
       |
-      | User Requests
+      | User Actions
       v
-+-----------CONTROL LAYER (controller.h)--------+
-|  - InternshipController                       |
-|  - applyForInternship()                       |
-|  - updateStatus()                             |
-|  - verifyInternship()                         |
-+----+-------+-------+-----+----+-------+-------+
++-----------CONTROL LAYER-------------------+
+|  - ApplicationManager                      |
+|  - ValidationService                       |
++----+-------+-------+-----+----+-------+---+
       |
       | Data Operations
       v
-+-----------ENTITY LAYER (models.h)-------------+
-|  - struct Student                             |
-|  - struct Internship                          |
-|  - struct Application                         |
-|  - std::vector<T> Storage Containers          |
-+-----+-----+-----+-----+-----+-----+-----+-----+
++-----------ENTITY LAYER--------------------+
+|  - Student                                 |
+|  - Internship                              |
+|  - Application                             |
++-----+-----+-----+-----+-----+-----+-----+--+
 ```
 
 ### Core Entities
@@ -374,6 +391,43 @@ Pending -> Shortlisted -> Selected -> Verified(Faculty)
 
 ---
 
+## System Use Cases & Actors
+
+The system supports four primary actors with their respective use cases:
+
+```
+ACTORS & USE CASES:
+
+Student Actor:
+  - Create Profile & Portfolio
+  - Browse & Filter Internships
+  - Apply for Internship
+
+Company HR Actor:
+  - Post Internship Listing
+  - Review Applications & Schedule Interviews
+  - Issue Certificate
+
+Faculty Mentor Actor:
+  - Review Weekly Reports
+  - Verify Completion & NOC
+
+Placement Officer Actor:
+  - View Placement Analytics
+  - Verify Completion & NOC
+```
+
+**Actor Responsibilities:**
+
+| Actor                 | Role                  | Key Use Cases                                                         |
+| --------------------- | --------------------- | --------------------------------------------------------------------- |
+| **Student**           | Job applicant         | Search internships, apply, track status                               |
+| **Company HR**        | Recruiter             | Post positions, review applications, conduct interviews, issue offers |
+| **Faculty Mentor**    | Academic supervisor   | Monitor student progress, verify completion, approve NOC              |
+| **Placement Officer** | Placement coordinator | Track analytics, verify all completions, coordinate with stakeholders |
+
+---
+
 ## Developer Notes
 
 ### Technology Stack
@@ -442,11 +496,13 @@ struct Internship { int internshipID; bool isOpened; };
 **2. Encapsulation**
 
 ```cpp
-class InternshipController {
+// ApplicationManager (Control Layer)
+class ApplicationManager {
 private:
-    std::vector<Student> studentStorage;    // Hidden from outside
+    std::vector<Student> students;          // Hidden from outside
+    std::vector<Application> applications;  // Encapsulated data
 public:
-    bool applyForInternship(...);           // Public interface
+    bool submitApplication(...);            // Public interface
 };
 ```
 
